@@ -7,7 +7,7 @@ vRPclient = Tunnel.getInterface("vRP","vRP_cuffcutter")
 vRPol = Tunnel.getInterface("vRP_outlawalert","vRP_outlawalert")
 
 local randomname = {"Lisa","Frank","Peter","Bob","Christian","James","Michael","Maria","David","Mary","Robert","Joseph","John","Clark","Taylor","George","Henry"}
-local service_name = police.service
+local service_name = "police.service"
 local rgmsg = {"Help!! Someone is shooting!","I just heard gunfire!","Oh my god, someone is shooting! Please come fast","I JUST HEARD SHOTS, PLEASE COME FAST"}
 local rmmsg = {"There are people fighting here, help, quick!","Help! two people are going to beat eachother to death!","Two people fighting, come, quick!"}
 local rtmsg = {"Someone just stole a car!","I just witnessed theft of a vehicle, come, quick!","A guy just stole a car"}
