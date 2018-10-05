@@ -16,11 +16,11 @@ local rtmsg = {"Someone just stole a car!","I just witnessed theft of a vehicle,
 RegisterServerEvent('sendServiceAlrt')
 AddEventHandler('sendServiceAlrt', function(x,y,z,type))
 	if type ~= nil then
-		if type == gunshot then
+		if type == "gunshot" then
 			vRP.sendServiceAlert(nil,service_name,x,y,z,randomname[math.random(#randomname)]..": "..rgmsg[math.random(#rgmsg)])
-		elseif type == melee then
+		elseif type == "melee" then
 			vRP.sendServiceAlert(nil,service_name,x,y,z,randomname[math.random(#randomname)]..": "..rmmsg[math.random(#rmmsg)])
-		elseif type == theft then
+		elseif type == "theft" then
 			vRP.sendServiceAlert(nil,service_name,x,y,z,randomname[math.random(#randomname)]..": "..rtmsg[math.ranbdom(#rtmsg)])
 		end
 	else
