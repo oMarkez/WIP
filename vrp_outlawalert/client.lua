@@ -22,7 +22,7 @@ Citizen.CreateThread( function()
         Wait(0)
         local plyPos = GetEntityCoords(GetPlayerPed(-1),  true)
         if IsPedTryingToEnterALockedVehicle(GetPlayerPed(-1)) or IsPedJacking(GetPlayerPed(-1)) then
-                TriggerServerEvent('sendServiceAlrt', plyPos.x, plyPos.y, plyPos.z,theft)
+                TriggerServerEvent('sendServiceAlrt', plyPos.x, plyPos.y, plyPos.z,"theft")
                 Wait(5000)
             end
         end
@@ -34,7 +34,7 @@ Citizen.CreateThread( function()
         Wait(0)
         local plyPos = GetEntityCoords(GetPlayerPed(-1),  true)
         if IsPedInMeleeCombat(GetPlayerPed(-1)) then 
-            TriggerServerEvent('sendServiceAlrt', plyPos.x, plyPos.y, plyPos.z,melee)
+            TriggerServerEvent('sendServiceAlrt', plyPos.x, plyPos.y, plyPos.z,"melee")
             Wait(3000)
         end
     end
@@ -45,7 +45,7 @@ Citizen.CreateThread( function()
         Wait(0)
         local plyPos = GetEntityCoords(GetPlayerPed(-1),  true)
         if IsPedShooting(GetPlayerPed(-1)) then
-            TriggerServerEvent('sendServiceAlrt', plyPos.x, plyPos.y, plyPos.z,gunshot)
+            TriggerServerEvent('sendServiceAlrt', plyPos.x, plyPos.y, plyPos.z,"gunshot")
             Wait(3000)
         end
     end
