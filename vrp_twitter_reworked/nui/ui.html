@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link href="https://fonts.googleapis.com/css?family=Arvo|Hind" rel="stylesheet">
+	<link rel="stylesheet" href="assets/css/materialize.min.css">
+    <link rel="stylesheet" href="ui.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.5/howler.core.min.js"></script>
+</head>
+	<body>
+		<div class="container" id="container">
+			<div id="header">
+				<center><img src="assets/img/twitter.png" width="250" height="150"></center>
+				<h1 style="float: left; color: #00acee; margin-top: -6%; margin-left: 5%; font-weight: bold; font-size: 62px; font-family: Arial, Helvetica, sans-serif;" id="username"></h1>
+				<div id="headbuttons" style="float: right;">
+					<button class="btn-flat waves-effect" id="register">OPRET KONTO</button>
+					<button class="btn-flat waves-effect" id="login">LOGIN</button>
+				</div>
+				<div style="float: left;">
+					<button class="btn-flat waves-effect" id="tilbage">TILBAGE</button>
+				</div>
+			</div>
+			<div id="twitter">
+				<form method="post" name="tweet">
+					<input class="writeTweet" type="text" maxlength="2000"  name="message" placeholder="Skriv din besked her">
+					<button class="btn-flat waves-effect" type="button" onclick="sendTweet()">Tweet</button>
+				</form>
+				<center>
+					<table style="overflow: scroll">
+						<tr>
+							<th>Bruger</th>
+							<th>Besked</th>
+							<th>Dato</th>
+						</tr>
+					</table>
+				</center>
+			</div>
+			<div id="loginkonto-form" class="modal">
+				<form class="modal-content animate" method="post" name="loginform">
+					<button class="btn-flat waves-effect" style="float: left;" type="button" onclick="document.getElementById('loginkonto-form').style.display='none'">Fortryd</button>
+					<center>
+						<div class="input-field small">
+							<p class="label">Brugernavn: </p>
+							<input type="text" placeholder="BobBenny103" name="uname" required/>
+						</div>
+
+						<div class="input-field small">
+							<p class="label">Kode: </p>
+							<input type="password" placeholder="" name="psw" required>
+						</div>
+					</center>
+				
+					<center>
+						<button class="btn-flat waves-effect" onclick="validateLogin()" type="button">Login</button>
+					</center>
+				</form>
+			</div>
+			<form id="opretkonto-form" class="opret" name="opret">
+				<h2>Konto formular</h2>
+				<div class="input-field small">
+					<p class="label">Brugernavn: </p>
+					<input name="brugernavn" maxlength="16" class="usrname"/>
+				</div>
+				<div class="input-field small">
+					<p class="label">Kode:</p>
+					<input name="psword" class="psword"/>
+				</div>
+				<div class="input-field small">
+					<p class="label">Gentast Kode:</p>
+					<input name="pswordretype" class="psword"/>
+				</div>
+				<div class="input-field">
+					<p class="label">Telefon Nummer</p>
+					<input name="telefonnr" placeholder="00000000" maxlength="8" type="number" id="tlfnr"/>
+				</div>
+				<div id="retypeerror" class="alert">
+					<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+					<strong>Advarsel!</strong> Koderne stemmer ikke overens
+				</div>
+				<loginbutton class="btn-flat waves-effect" id="opretsubmit" onclick="opretBruger()">OPRET</loginbutton>
+			</form>
+		</div>
+		<script src="assets/js/jquery.js" type="text/javascript"></script>
+		<script src="assets/js/materialize.js" type="text/javascript"></script>
+		<script src="ui.js" type="text/javascript"></script>
+	</body>
+</html>

@@ -1,0 +1,238 @@
+body {
+	margin: 0;
+	padding: 0;
+	overflow: auto;
+	height: 100%;
+	width: 100%;
+  }
+  #paper {
+	display: none;
+	background: #ffffff;
+	height: 700px;
+	width: 600px;
+	overflow: auto;
+	position: absolute;
+	left: 34%;
+	top: 100px;
+	box-shadow: 0px 0px 33px -9px rgba(0,0,0,0.3);
+  }
+  #paper #header {
+	background: #00acee;
+	height: 60px;
+	vertical-align: middle;
+	padding: 20px;
+	color: #ffffff;
+  }
+  #paper #header h1 {
+	margin: 0;
+	font-size: 15px;
+	padding-top: 2px;
+	float: left;
+  }
+  bigbutton {
+	width: 100px;
+	height: 50px;
+	margin-top: -6px;
+	float: right !important;
+	color: #ffffff !important;
+	background: #00acee !important;
+	position: absolute;
+  }
+  bigbutton:hover{
+	background-color: #0077ff !important;
+  }
+  #login-wait{
+	width: 150px;
+	height: 150px;
+	margin-left: 10%;
+	margin-top: 13%;
+	position: absolute;
+  }
+  
+  
+  loginbutton {
+	width: 250px;
+	height: 50px;
+	margin-left: 157px;
+	text-align: center;
+	color: #ffffff !important;
+	background: #00acee !important;
+	position: absolute;
+  }
+  loginbutton:hover{
+	background-color: #0077ff !important;
+  }
+  
+  leftbutton {
+	margin: 0;
+	font-size: 15px;
+	padding-top: 2px;
+	float: left;
+	color: #ffffff !important;
+	margin-top: -6px;
+  }
+  leftbutton:hover{
+	background-color: #ffffff27 !important;
+  }
+  #paper #content {
+	padding: 20px;
+  }
+  .input-field {
+	border: 1px solid black;
+	display: inline-block;
+  }
+  .label {
+	color: #444444;
+	top: -13px;
+	margin-left: 10px;
+	position: absolute;
+	font-size: 12px;
+  }
+  input {
+	margin: 10px 0 0 0 !important;
+	padding: 0 0 0 10px !important;
+	height: 30px !important;
+	width: 547px !important;
+	box-sizing: border-box;
+	display: inline-block !important;
+	/* background: #f1fff3 !important; */
+	background: #f9f9f9 !important;
+	border: none !important;
+	font-weight: bold;
+  }
+  input:focus {
+	box-shadow: none !important;
+	background: #efefef !important;
+  }
+  .small {
+	width: 278px !important;
+  }
+  .small input {
+	width: 266px !important;
+  }
+  .input-field {
+	margin: 10px 0 10px 0;
+  }
+  #footer {
+	position: absolute;
+	bottom: 30px;
+  }
+  button {
+	width: 184px;
+	color: #ffffff !important;
+	background: #00acee !important;
+  }
+  button:hover{
+	background-color: #0077ff !important;
+  }
+  h2 {
+	font-weight: bold;
+	font-size: 15px;
+	margin: 10px 0 10px 0;
+  }
+  hr {
+	width: 600px;
+	margin-left: -20px;
+  }
+  #transaction-form {
+	display: none;
+  }
+  #take-form {
+	display: none;
+  }
+  #login-form {
+	display: none;
+  }
+  #opretkonto-form {
+	display: none;
+  }
+  #home {
+	text-align: center;
+  }
+  #home p:nth-child(1) {
+	font-weight: bold;
+	font-size: 18px;
+  }
+  .blaine button {
+	background: #921a21 !important;
+  }
+  .blaine #paper #header {
+	background: #921a21;
+  }
+  .pacific button {
+	background: #67573b !important;
+  }
+  .pacific #paper #header {
+	background: #67573b;
+  }
+  @media only screen and (max-width: 1325px) {
+	#paper {
+	  top: -14px !important;
+	}
+  }
+  @media only screen and (max-height: 768px) {
+	#paper {
+	  top: -14px !important;
+	}
+  }
+
+  /* The Modal (background) */
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+	background-color: #fefefe;
+	margin: 5px auto; /* 15% from the top and centered */
+	border: 1px solid #888;
+	width: 80%; /* Could be more or less, depending on screen size */
+}
+	
+/* Add Zoom Animation */
+.animate {
+	-webkit-animation: animatezoom 0.6s;
+	animation: animatezoom 0.6s
+	}
+	
+	@-webkit-keyframes animatezoom {
+	from {-webkit-transform: scale(0)} 
+	to {-webkit-transform: scale(1)}
+	}
+	
+	@keyframes animatezoom {
+	from {transform: scale(0)} 
+	to {transform: scale(1)}
+}
+
+.alert {
+	padding: 20px;
+	background-color: #f44336;
+	color: white;
+}
+  
+.closebtn {
+	margin-left: 15px;
+	color: white;
+	font-weight: bold;
+	float: right;
+	font-size: 22px;
+	line-height: 20px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+  
+.closebtn:hover {
+	color: black;
+}
+  
