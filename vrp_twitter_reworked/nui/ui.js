@@ -1,14 +1,9 @@
-window.addEventListener("message", function(event){
-    if(event.data.action == "init"){
-        const resourceName = event.data.resourcename
-    } 
-});
-
 var loggedIn = false
 
 $(document).ready(function(){
     $("#loginkonto-form").hide();
     $("#opretkonto-form").hide();
+    $("#container").hide();
 
     var showTwitter = true
 
@@ -33,7 +28,7 @@ $(document).ready(function(){
     $(document).keyup(function(e) {
         if ( e.keyCode == 27 ) {
             $('#container').hide();
-            $.post("http://" + resourceName + "escape", JSON.stringify({}));
+            $.post("http://vrp_twitter_reworked/close", JSON.stringify({}));
         }
     });
 });
@@ -41,21 +36,16 @@ $(document).ready(function(){
 window.addEventListener("message", function(event) {
     if(event.data.action == "openTwitter"){
         $("#container").show();
-    }
-    if(event.data.action == "closeTwitter"){
-        togglePages("all")
+    } else if (event.data.action == "closeTwitter"){
         $("#container").hide();
-    }
-});
-
-window.addEventListener("message", function(event) {
-    if(event.data.action == "login") {
-        username = event.data.username
-    }
-});
-
-window.addEventListener("message", function(event) {
-    if(event.data.action == "opret") {
+        togglePages("all")
+    } else if (event.data.action == "login") {
+        console.log(event.data.action + " - " + event.data.brugernavn)
+        username = event.data.brugernavn
+        twitterLogIn(username)
+        $("#loginkonto-form").hide();
+        togglePages("openall")
+    } else if(event.data.action == "opret") {
         username = event.data.username
     }
 });
@@ -87,6 +77,11 @@ function togglePages(page){
         togglePages("all")
         $("#opretkonto-form").show();
         $("#retypeerror").hide();
+    }
+    if(page == "openall"){
+        $("#twitter").show();
+        $("#headbuttons").show();
+        showTwitter = true
     }
 }
 
@@ -136,6 +131,8 @@ function sendTweet(){
             cel1.innerHTML = username;
             cel2.innerHTML = message;
             cel3.innerHTML = dateTime
+
+            $.post("http://vrp_twitter_reworked/sendTweet", JSON.stringify({brugernavn:username, tweet: message, time: dateTime}));
         }
     }
 }
@@ -166,11 +163,10 @@ function opretBruger(){
     if(kode == retype) {
 
         if(usrname != " " && kode != " " && telefon != " "){
-            var kode = sha256(kode)
-            //$.post("http://" + resourceName + "opret", JSON.stringify({brugernavn: usrname, kode: kode, telefon: telefon}));
+            $.post("http://vrp_twitter_reworked/opret", JSON.stringify({brugernavn: usrname, kode: kode, telefon: telefon}));
+            togglePages("twitter")
+            twitterLogIn(usrname)
         }
-        togglePages("twitter")
-        twitterLogIn(usrname)
     } else{
         $("#retypeerror").show();
     }
@@ -180,21 +176,5 @@ function validateLogin(){
     var usrname = document.loginform.uname.value;
     var psword = document.loginform.psw.value;
 
-    $.post("http://" + resourceName + "/validateLogin", JSON.stringify({brugernavn:usrname, kode:psword}));
-}
-
-
-async function sha256(message) {
-    // encode as UTF-8
-    const msgBuffer = new TextEncoder('utf-8').encode(message);                    
-
-    // hash the message
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-
-    // convert ArrayBuffer to Array
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-
-    // convert bytes to hex string                  
-    const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
-    return hashHex;
+    $.post("http://vrp_twitter_reworked/validateLogin", JSON.stringify({brugernavn:usrname, kode:psword}));
 }

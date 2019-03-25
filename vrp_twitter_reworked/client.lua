@@ -1,9 +1,3 @@
-local Tunnel = module("vrp", "lib/Tunnel")
-local Proxy = module("vrp", "lib/Proxy")
-
-vRP = Proxy.getInterface("vRP")
-vRPclient = Tunnel.getInterface("vRP")
-
 local menuEnabled = false
 lastLoggedIn = ""
 
@@ -52,13 +46,14 @@ RegisterNUICallback("validateLogin", function(data, cb)
 end)
 
 RegisterNetEvent("twitterLoginAuthenticated")
-AddEventHandler("twitterLoginAuthenticated", function(username)
-	if username then
+AddEventHandler("twitterLoginAuthenticated", function(data)
+	if data.brugernavn then
+		print(username)
 		SendNUIMessage({
 			action = "login",
-			username = 	username
+			brugernavn = data.brugernavn
 		})
-		lastLoggedIn = username
+		lastLoggedIn = data.brugernavn
 	else
 		TriggerEvent("twitterError", "notfound")
 	end
@@ -86,16 +81,4 @@ AddEventHandler("updateTweets", function(tweets)
 		action = "updateTweets",
 		tweets = tweets
 	})
-end)
-
-errormessages = {
-	samename = "Du har allerede en bruger med dette navn.",
-	notfound = "Brugernavn og/eller kode er forkert."
-}
-
-RegisterNetEvent("twitterError")
-AddEventHandler("twitterError", function(type)
-	if errormessages[type] then
-		vRPclient.notify(source, {errormessages[type]})
-	end
 end)

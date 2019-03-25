@@ -1,44 +1,57 @@
+--[[BASE]]--
+MySQL = module("vrp_mysql", "MySQL")
 local Tunnel = module("vrp", "lib/Tunnel")
 local Proxy = module("vrp", "lib/Proxy")
 
 vRP = Proxy.getInterface("vRP")
-vRPclient = Tunnel.getInterface("vRP")
-MySQL = module("MySQL", "vrp_mysql")
+vRPclient = Tunnel.getInterface("vRP","vrp_dmvschool")
 
 MySQL.createCommand("vRP/twitter_column", [[
-  CREATE TABLE IF NOT EXISTS vrp_twitter_messages(
-    id INTEGER AUTO_INCREMENT,
-    user_id INTEGER,
-    bruger VARCHAR(50),
-    message VARCHAR(2000),
-    dato TIMESTAMP
-  );
-  CREATE TABLE IF NOT EXISTS vrp_twitter_accounts(
-    id INTEGER AUTO_INCREMENT,
-    user_id INTEGER,
-    brugernavn VARCHAR(50),
-    kode VARCHAR(100)
-    dato TIMESTAMP
-  )
+CREATE TABLE IF NOT EXISTS vrp_twitter_messages(
+  id INTEGER AUTO_INCREMENT,
+  user_id INTEGER,
+  bruger VARCHAR(50),
+  message VARCHAR(2000),
+  dato TIMESTAMP,
+  CONSTRAINT pk_twitter_messages PRIMARY KEY(id)
+);
+CREATE TABLE IF NOT EXISTS vrp_twitter_accounts(
+  id INTEGER AUTO_INCREMENT,
+  user_id INTEGER,
+  brugernavn VARCHAR(50),
+  kode VARCHAR(100),
+  dato TIMESTAMP,
+  CONSTRAINT pk_twitter_accounts PRIMARY KEY(id)
+);
 ]])
+
 MySQL.createCommand("vRP/insert_tweet", "INSERT IGNORE INTO vrp_twitter_messages(bruger,user_id,message) VALUES(@bruger,@user_id,@message)")
-MySQL.createCommand("vRP/opret_bruger", "INSERT INTO vrp_twitters_accounts(user_id, brugernavn, kode) VALUES(@user_id, @brugernavn, @kode)")
+MySQL.createCommand("vRP/opret_bruger", "INSERT IGNORE INTO vrp_twitter_accounts(user_id, brugernavn, kode) VALUES(@user_id, @brugernavn, @kode)")
 MySQL.createCommand("vRP/get_tweets", "SELECT * FROM vrp_twitter_messages")
-MySQL.createCommand("vRP/delete_old_tweets", "DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE,dato) > 3)")
+MySQL.createCommand("vRP/delete_old_tweets", "DELETE FROM vrp_twitter_messages WHERE (DATEDIFF(CURRENT_DATE,dato) > 3)")
 MySQL.createCommand("vRP/get_alle_brugere", "SELECT * FROM vrp_twitter_accounts WHERE id = @user_id")
-MySQL.createCommand("vRP/get_bruger", "SELECT * FROM vrp_twitter_accounts WHERE brugernavn = @brugernavn, kode = @kode")
+MySQL.createCommand("vRP/get_bruger", "SELECT * FROM vrp_twitter_accounts WHERE brugernavn = @brugernavn AND kode = @kode")
 
 MySQL.execute("vRP/twitter_column")
 MySQL.execute("vRP/delete_old_tweets")
 
+-- transform a string of bytes in a string of hexadecimal digits
+local function str2hexa(s)
+  local h = string.gsub(s, ".", function(c)
+    return string.format("%02x", string.byte(c))
+  end)
+  return h
+end
+
 RegisterServerEvent("sendTweet")
 AddEventHandler("sendTweet", function(data)
+  print("send tweet")
   if data then 
+    for k,v in pairs(data) do print(k,v) end
     local user_id = vRP.getUserId({source})
     if user_id then
-      local bruger, dato, tweet = table.unpack(data)
-      if bruger ~= nil and dato ~= nil and tweet ~= nil then
-        MySQL.execute("vRP/insert_tweet", {bruger = bruger, user_id = user_id, message = tweet})
+      if data.brugernavn ~= nil and data.tweet then
+        MySQL.execute("vRP/insert_tweet", {bruger = data.brugernavn, user_id = user_id, message = data.tweet})
         TriggerEvent("updateTweets")
       end
     end
@@ -56,12 +69,14 @@ end)
 
 RegisterNetEvent("twitterLogin")
 AddEventHandler("twitterLogin", function(data)
-  local username, kode = table.unpack(data)
   local user_id = vRP.getUserId({source})
+  print(data.brugernavn.." - "..data.kode)
+  data.kode = str2hexa(data.kode)
+  print(data.kode)
   if user_id then
-    MySQL.query("vRP/get_bruger", {brugernavn = username, kode = kode}, function(rows, affected)
+    MySQL.query("vRP/get_bruger", {brugernavn = data.brugernavn, kode = tonumber(data.kode)}, function(rows, affected)
       if #rows > 0 then
-        TriggerClientEvent("twitterLoginAuthenticated", source, rows[1].brugernavn)
+        TriggerClientEvent("twitterLoginAuthenticated", source, data)
       else
         TriggerClientEvent("twitterLoginAuthenticated", source, nil)
       end
@@ -71,20 +86,31 @@ end)
 
 RegisterServerEvent("opretBruger")
 AddEventHandler("opretBruger", function(data)
-  local username, kode, telefon = table.unpack(data)
+  print("opret bruger")
+  print(data.kode.." - "..data.brugernavn.." - "..data.telefon)
+  data.kode = str2hexa(tostring(data.kode))
+  print("-----------")
+  print(data.kode)
   local user_id = vRP.getUserId({source})
   if user_id then
+    print("user-id")
     vRP.getUserIdentity({user_id, function(identity)
-      if identity.phone == telefon then
+      identity.phone = identity.phone:gsub(" ", "")
+      print(identity.phone.." - "..data.telefon)
+      if identity.phone == data.telefon then
+        print("telefon")
         MySQL.query("vRP/get_alle_brugere", {user_id = user_id}, function(rows, affected)
           if #rows < 5 then
             for k,v in pairs(rows) do
-              if v.brugernavn == username then
+              if v.brugernavn == data.brugernavn then
+                print("brugernavn == username")
                 TriggerEvent("twitterError", source, "samename")
                 return
               end
             end
-            MySQL.execute("vRP/opret_bruger", {user_id = user_id, brugernavn = username, kode = kode})
+
+            print("mysql "..data.brugernavn.." "..data.kode)
+            MySQL.execute("vRP/opret_bruger", {user_id = user_id, brugernavn = data.brugernavn, kode = data.kode})
           end
         end)
       end
@@ -98,9 +124,21 @@ vRP.registerMenuBuilder({"main", function(add, data)
 		local choices = {}
 	
 		choices["Twitter"] = {function(player,choice)
-      TriggerClientEvent("ToggleActionmenu", source)
-		}
+      TriggerClientEvent("ToggleActionmenu", player)
+    end,"Skriv i twitter"}
 
 		add(choices)
 	end
 end})
+
+errormessages = {
+	samename = "Du har allerede en bruger med dette navn.",
+	notfound = "Brugernavn og/eller kode er forkert."
+}
+
+RegisterServerEvent("twitterError")
+AddEventHandler("twitterError", function(type)
+	if errormessages[type] then
+		vRPclient.notify(source, {errormessages[type]})
+	end
+end)
