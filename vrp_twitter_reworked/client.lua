@@ -48,7 +48,7 @@ end)
 RegisterNetEvent("twitterLoginAuthenticated")
 AddEventHandler("twitterLoginAuthenticated", function(data)
 	if data.brugernavn then
-		print(username)
+		print(data.brugernavn)
 		SendNUIMessage({
 			action = "login",
 			brugernavn = data.brugernavn
