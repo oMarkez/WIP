@@ -3,7 +3,7 @@ var loggedIn = false
 $(document).ready(function(){
     $("#loginkonto-form").hide();
     $("#opretkonto-form").hide();
-    $("#container").hide();
+    $("#container").show();
 
     var showTwitter = true
 
@@ -37,7 +37,7 @@ window.addEventListener("message", function(event) {
     if(event.data.action == "openTwitter"){
         $("#container").show();
     } else if (event.data.action == "closeTwitter"){
-        $("#container").hide();
+        //$("#container").hide();
         togglePages("all")
     } else if (event.data.action == "login") {
         console.log(event.data.action + " - " + event.data.brugernavn)
@@ -47,6 +47,9 @@ window.addEventListener("message", function(event) {
         togglePages("openall")
     } else if(event.data.action == "opret") {
         username = event.data.username
+        twitterLogIn(username)
+        $("#opretkonto-form").hide();
+        togglePages("openall")
     }
 });
 
@@ -56,6 +59,7 @@ function togglePages(page){
         document.getElementById('loginkonto-form').style.display='none'
         $("#twitter").hide();
         $("#headbuttons").hide();
+        $("#tilbage").show();
         showTwitter = false
     }
     if(page == "twitter"){
@@ -77,6 +81,7 @@ function togglePages(page){
         togglePages("all")
         $("#opretkonto-form").show();
         $("#retypeerror").hide();
+        $("#opretsubmit").show();
     }
     if(page == "openall"){
         $("#twitter").show();
@@ -88,11 +93,13 @@ function togglePages(page){
 var username = ""
 
 function twitterLogIn(usrname){
-    loggedIn = true
-    username = usrname
-    console.log(username)
+    if(usrname){
+        loggedIn = true
+        username = usrname
+        console.log(username)
 
-    document.getElementById("username").innerHTML = username
+        document.getElementById("username").innerHTML = username
+    }
 }
 
 function sendTweet(){
