@@ -17,11 +17,13 @@
 				</div>
 				<div id="tilbage" style="float: left; display: inline; margin-top: -14.8%;">
 					<button class="btn-flat waves-effect round high" id="tilbage">TILBAGE</button>
+					<button class="btn-flat waves-effect round high" onclick="logOut()" id="logud">LOG UD</button>
+				</div>
 			</div>
 			<div class="twitter" id="twitter">
 				<form method="post" name="tweet">
-					<h1 id="username" style="font-size: 32px; color: #00acee; font-weight: bold; margin-left: 2px;">oMarkez</h1>
-					<input class="writeTweet" type="text" maxlength="2000"  name="message" placeholder="Skriv din besked her">
+					<h1 id="username" style="font-size: 32px; color: #00acee; font-weight: bold; margin-left: 2px;"></h1>
+					<input class="writeTweet" type="text" maxlength="140" name="message" placeholder="Skriv din besked her">
 					<button class="btn-flat waves-effect round" type="button" onclick="sendTweet()">Tweet</button>
 				</form>
 				<table style="overflow: scroll">

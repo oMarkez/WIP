@@ -58,6 +58,15 @@ AddEventHandler("sendTweet", function(data)
   end
 end)
 
+RegisterServerEvent("openedTwitter")
+AddEventHandler("openedTwitter", function()
+  MySQL.query("vRP/get_tweets", {}, function(rows, affected)
+    if #rows > 0 then
+      TriggerClientEvent("openTwitter", source, rows)
+    end
+  end)
+end)
+
 RegisterServerEvent("updateTweets")
 AddEventHandler("updateTweets", function()
   MySQL.query("vRP/get_tweets", {}, function(rows, affected)
@@ -70,15 +79,19 @@ end)
 RegisterNetEvent("twitterLogin")
 AddEventHandler("twitterLogin", function(data)
   local user_id = vRP.getUserId({source})
+  local player = vRP.getUserSource({user_id})
   print(data.brugernavn.." - "..data.kode)
   data.kode = str2hexa(data.kode)
   print(data.kode)
   if user_id then
     MySQL.query("vRP/get_bruger", {brugernavn = data.brugernavn, kode = tonumber(data.kode)}, function(rows, affected)
+      for k,v in pairs(rows[1]) do print(k,v) end
       if #rows > 0 then
-        TriggerClientEvent("twitterLoginAuthenticated", source, data)
+        print("rows > 0")
+        TriggerClientEvent("twitterLoginAuthenticated", player, rows[1].brugernavn)
       else
-        TriggerClientEvent("twitterLoginAuthenticated", source, nil)
+        print("rows < 0")
+        TriggerClientEvent("twitterLoginAuthenticated", player, nil)
       end
     end)
   end
@@ -124,7 +137,7 @@ vRP.registerMenuBuilder({"main", function(add, data)
 		local choices = {}
 	
 		choices["Twitter"] = {function(player,choice)
-      TriggerClientEvent("ToggleActionmenu", player)
+      TriggerEvent("openedTwitter", player)
     end,"Skriv i twitter"}
 
 		add(choices)

@@ -3,7 +3,7 @@ var loggedIn = false
 $(document).ready(function(){
     $("#loginkonto-form").hide();
     $("#opretkonto-form").hide();
-    $("#container").show();
+    $("#container").hide();
 
     var showTwitter = true
 
@@ -36,6 +36,21 @@ $(document).ready(function(){
 window.addEventListener("message", function(event) {
     if(event.data.action == "openTwitter"){
         $("#container").show();
+        if(event.data.tweets != undefined){
+            var tweets = event.data.tweets
+            for(i=0;i<tweets.length;i++){
+                var table = document.getElementsByTagName("table")[0];
+                var newTweet = table.insertRow(1);
+
+                var cel1 = newTweet.insertCell(0);
+                var cel2 = newTweet.insertCell(1);
+                var cel3 = newTweet.insertCell(2);
+
+                cel1.innerHTML = tweets.account;
+                cel2.innerHTML = tweets.tweet;
+                cel3.innerHTML = tweets.date;
+            }
+        }
     } else if (event.data.action == "closeTwitter"){
         //$("#container").hide();
         togglePages("all")
@@ -64,7 +79,6 @@ function togglePages(page){
     }
     if(page == "twitter"){
         showTwitter = !showTwitter
-        console.log("twitter")
         if(showTwitter){
             togglePages("all")
             $("#twitter").show();
@@ -90,13 +104,22 @@ function togglePages(page){
     }
 }
 
+function logOut(){
+    if(username){
+        loggedIn = false
+        username = ""
+        togglePages("openall")
+
+        document.getElementById("username").innerHTML = "Logget ud"
+    }
+}
+
 var username = ""
 
 function twitterLogIn(usrname){
     if(usrname){
         loggedIn = true
         username = usrname
-        console.log(username)
 
         document.getElementById("username").innerHTML = username
     }
@@ -107,6 +130,10 @@ function sendTweet(){
         var message = document.tweet.message.value;
 
         if(message != undefined && message != ""){
+
+            if(message.length > 70){
+                message = message.substring(0,70) + "\n" + message.substring(70,message.length)
+            }
 
             var today = new Date();
             var date = today.getDate()+"/"+(today.getMonth()+1)+'/'+today.getFullYear();
@@ -137,7 +164,7 @@ function sendTweet(){
 
             cel1.innerHTML = username;
             cel2.innerHTML = message;
-            cel3.innerHTML = dateTime
+            cel3.innerHTML = dateTime;
 
             $.post("http://vrp_twitter_reworked/sendTweet", JSON.stringify({brugernavn:username, tweet: message, time: dateTime}));
         }
@@ -166,7 +193,6 @@ function opretBruger(){
     var telefon = document.opret.telefonnr.value;
     var retype = document.opret.pswordretype.value;
 
-    console.log(kode + " - " + retype)
     if(kode == retype) {
 
         if(usrname != " " && kode != " " && telefon != " "){

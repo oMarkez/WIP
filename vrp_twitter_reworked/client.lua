@@ -6,6 +6,23 @@ AddEventHandler("ToggleActionmenu", function()
 	ToggleActionMenu()
 end)
 
+RegisterNetEvent("openTwitter")
+AddEventHandler("openTwitter", function(data)
+	menuEnabled = not menuEnabled
+	if ( menuEnabled ) then
+		SetNuiFocus( true, true )
+		SendNUIMessage({
+			action = "openTwitter",
+			tweets = {account = data.bruger, tweet = data.message, date = data.dato}
+		})
+	else
+		SetNuiFocus( false )
+		SendNUIMessage({
+			action = "closeTwitter"
+		})
+	end
+end)
+
 function ToggleActionMenu()
 	menuEnabled = not menuEnabled
 	if ( menuEnabled ) then
@@ -47,13 +64,14 @@ end)
 
 RegisterNetEvent("twitterLoginAuthenticated")
 AddEventHandler("twitterLoginAuthenticated", function(data)
-	if data.brugernavn then
-		print(data.brugernavn)
+	print(data)
+	if data then
+		print(data)
 		SendNUIMessage({
 			action = "login",
-			brugernavn = data.brugernavn
+			brugernavn = data
 		})
-		lastLoggedIn = data.brugernavn
+		lastLoggedIn = data
 	else
 		TriggerEvent("twitterError", "notfound")
 	end
@@ -63,15 +81,6 @@ RegisterNUICallback("opret", function(data, cb)
 	if data then
 		TriggerServerEvent("opretBruger", data)
 		cb("ok")
-	end
-end)
-
-AddEventHandler("onResourceStart", function(resource)
-	if resource == GetCurrentResourceName() then
-		SendNUIMessage({
-			action = "init",
-			resourcename = GetCurrentResourceName()
-		})
 	end
 end)
 
